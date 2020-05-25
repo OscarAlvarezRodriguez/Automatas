@@ -1,0 +1,17 @@
+#alphabet
+a
+b
+c
+#states
+s0
+s1
+s2
+#initial
+s0
+#accepting
+s1
+s2
+#transitions
+s0:b>s1
+s1:a>s2,s1,s0
+s1:a>s0

@@ -1,5 +1,8 @@
 package Project;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.util.LinkedList;
 
 public class Automata {
@@ -71,6 +74,10 @@ public class Automata {
 					matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])] = parts2[0];
 				}
 			} else {
+//				System.out.println(this.states.indexOf(parts[0]) + " - " + this.states.indexOf(parts2[1]));
+//				System.out.println(parts[0] + " StateActual");
+//				System.out.println(parts2[1] + " StateSig");
+//				System.out.println(parts2[0] + " StateTransition");
 				matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts2[1])] = parts2[0];
 			}
 		}
@@ -78,7 +85,6 @@ public class Automata {
 		return matriz;
 		// obtiene el index del estado actual y al que va
 	}
-
 
 	public void displayAutomata() {
 
@@ -109,32 +115,120 @@ public class Automata {
 		}
 	}
 
-	public static void main(String[] args) {
-		String[] alphabet = new String[3];
-		alphabet[0] = "a";
-		alphabet[1] = "b";
-		alphabet[2] = "c";
+	public static void main(String[] arg) {
 
-		String[] states = new String[3];
-		states[0] = "q0";
-		states[1] = "q1";
-		states[2] = "q2";
+		/*
+		 * Codigo base de lectura tomado de
+		 * http://chuwiki.chuidiang.org/index.php?title=
+		 * Lectura_y_Escritura_de_Ficheros_en_Java solo modificaré un poco el codigo
+		 */
 
-		String state0 = "q0";
+		File archivo = null;
+		FileReader fr = null;
+		BufferedReader br = null;
 
-		String[] acceptationState = new String[2];
-		acceptationState[0] = "q1";
-		acceptationState[1] = "q2";
+		try {
+			// Apertura del fichero y creacion de BufferedReader para poder
+			// hacer una lectura comoda (disponer del metodo readLine()).
+			archivo = new File("G:\\Prueba.txt");
+			fr = new FileReader(archivo);
+			br = new BufferedReader(fr);
 
-		String[] transition = new String[2];
-		transition[0] = "q0:b>q1";
-		transition[1] = "q1:a>q2,q1";
-//		transition[1] = "q1:a>q0";
+			// Lectura del fichero
+			String linea;
+			int time = -1;
 
-		Automata pruebas = new Automata(alphabet, states, state0, acceptationState, transition);
-		pruebas.displayAutomata();
-		System.out.println();
-		pruebas.TransitionMatriz(transition);
+			LinkedList<String> auxAlphabet = new LinkedList<String>();
+			LinkedList<String> auxStates = new LinkedList<String>();
+			String auxState0 = null;
+			LinkedList<String> auxAcceptationStates = new LinkedList<String>();
+			LinkedList<String> auxtransition = new LinkedList<String>();
 
+			while ((linea = br.readLine()) != null) {
+//				System.out.println(linea + "\t\t" + linea.length());
+				if (linea.contentEquals("#alphabet")) {
+					time = 0;
+				} else if (linea.contentEquals("#states")) {
+					time = 1;
+				} else if (linea.contentEquals("#initial")) {
+					time = 2;
+				} else if (linea.contentEquals("#accepting")) {
+					time = 3;
+				} else if (linea.contentEquals("#transitions")) {
+					time = 4;
+				} else {
+					switch (time) {
+					case 0:
+						auxAlphabet.add(linea);
+						break;
+					case 1:
+						auxStates.add(linea);
+						break;
+					case 2:
+						auxState0 = linea;
+						break;
+					case 3:
+						auxAcceptationStates.add(linea);
+						break;
+					case 4:
+						auxtransition.add(linea);
+						break;
+					default:
+						System.out.println(time);
+						throw new IllegalArgumentException("Unexpected value: " + time);
+					}
+				}
+
+			}
+
+			// pasar las listas a arrays para despues pasarlas a listas.....
+
+			String[] alphabet = null;
+			String[] states = null;
+			String state0 = null;
+			String[] acceptationState = null;
+			String[] transition = null;
+
+			alphabet = new String[auxAlphabet.size()];
+			for (int i = 0; i < auxAlphabet.size(); i++) {
+				alphabet[i] = auxAlphabet.get(i);
+			}
+
+			states = new String[auxStates.size()];
+			for (int i = 0; i < auxStates.size(); i++) {
+				states[i] = auxStates.get(i);
+			}
+
+			state0 = auxState0;
+
+			acceptationState = new String[auxAcceptationStates.size()];
+			for (int i = 0; i < auxAcceptationStates.size(); i++) {
+				acceptationState[i] = auxAcceptationStates.get(i);
+			}
+
+			transition = new String[auxtransition.size()];
+			for (int i = 0; i < auxtransition.size(); i++) {
+				transition[i] = auxtransition.get(i);
+			}
+			
+			
+			
+			Automata prueba = new Automata(alphabet, states, state0, acceptationState, transition);
+			prueba.displayAutomata();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// En el finally cerramos el fichero, para asegurarnos
+			// que se cierra tanto si todo va bien como si salta
+			// una excepcion.
+			try {
+				if (null != fr) {
+					fr.close();
+				}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
 	}
 }

@@ -1,0 +1,26 @@
+		String[] alphabet = new String[3];
+		alphabet[0] = "a";
+		alphabet[1] = "b";
+		alphabet[2] = "c";
+
+		String[] states = new String[3];
+		states[0] = "q0";
+		states[1] = "q1";
+		states[2] = "q2";
+
+		String state0 = "q0";
+
+		String[] acceptationState = new String[2];
+		acceptationState[0] = "q1";
+		acceptationState[1] = "q2";
+
+		String[] transition = new String[2];
+		transition[0] = "q0:b>q1";
+		transition[1] = "q1:a>q2,q1,q0";
+//		transition[1] = "q1:a>q0";
+
+		Automata pruebas = new Automata(alphabet, states, state0, acceptationState, transition);
+		pruebas.displayAutomata();
+		System.out.println();
+		pruebas.TransitionMatriz(transition);
+		
