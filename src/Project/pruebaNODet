@@ -1,6 +1,5 @@
 #alphabet
-a
-b
+a-c
 #states
 s0
 s1
@@ -10,9 +9,7 @@ s0
 #accepting
 s2
 #transitions
-s0:b>s0
-s0:a>s1
-s1:a>s2
-s1:b>s0
+s0:a>s1,s2
+s1:a>s2,s1
 s2:a>s2
-s2:b>s0
+s2:b>s0,s2

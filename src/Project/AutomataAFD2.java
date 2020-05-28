@@ -5,7 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.LinkedList;
 
-public class Automata {
+//PROCESAMIENTO DETERMINISTA
+public class AutomataAFD2 {
 
 	LinkedList<String> alphabet = new LinkedList<String>();
 	LinkedList<String> states = new LinkedList<String>();
@@ -14,7 +15,56 @@ public class Automata {
 
 	String[][] transition;
 
-	public Automata(String[] alphabet, String[] states, String state0, String[] acceptationState, String[] transition) {
+	public boolean procesarCadena(String cadena) {
+		System.out.println("\n \n \n");
+		System.out.println("INICIANDO PROCESAMIENTO");
+		return procesarCadena(cadena, null);
+	}
+
+	private boolean procesarCadena(String cadena, String state) {
+		if (state == null) {
+			state = this.State0;
+		}
+		if (cadena.contentEquals("")) {
+			System.out.println("Ha terminado el procesamiento --> Estado actual: Cadena '" + cadena + "'   Estado '"
+					+ state + "'");
+
+			if (acceptationStates.contains(state)) {
+				System.out.println("El estado " + state + " es un estado de aceptacion");
+				return true;
+			} else {
+				System.out.println("El estado " + state + " No es un estado de aceptacion");
+				return false;
+			}
+		}
+
+		System.out.println();
+		System.out.println("Estado actual: Cadena '" + cadena + "'   Estado '" + state + "'");
+
+		String sigma = cadena.substring(0, 1);
+		cadena = cadena.substring(1);
+
+		System.out.println("Division de cadena: Letra '" + sigma + "'    Cadena '" + cadena + "'");
+
+		System.out.println();
+
+		for (int i = 0; i < this.transition.length; i++) {
+			if (this.transition[this.states.indexOf(state)][i] == null) {
+			} else if (this.transition[this.states.indexOf(state)][i].contains(sigma) && this.transition[this.states.indexOf(state)][i].contains(",")) {
+				state = states.get(i);
+				return procesarCadena(cadena, state);
+			} else if (this.transition[this.states.indexOf(state)][i].contentEquals(sigma)) {
+				state = states.get(i);
+				return procesarCadena(cadena, state);
+			}
+		}
+
+		System.out.println("El estado " + state + " No tiene transicion con " + sigma + " esta cadena no es aceptada");
+		return false;
+	}
+
+	public AutomataAFD2(String[] alphabet, String[] states, String state0, String[] acceptationState,
+			String[] transition) {
 		// get alphabet and add the list
 		for (int i = 0; i < alphabet.length; i++) {
 			this.alphabet.add(alphabet[i]);
@@ -62,28 +112,49 @@ public class Automata {
 		 */
 
 		for (int i = 0; i < transition.length; i++) {
-			String[] parts = transition[i].split(":");
-//			System.out.println(parts[0] + "   -   " + parts[1]);
 
+			String[] parts = transition[i].split(":");
 			String[] parts2 = parts[1].split(">");
+
+//			System.out.println(transition[i]);
+//			System.out.println(parts[0] + "   -   " + parts[1]);
 //			System.out.println(parts2[0] + "   -   " + parts2[1]);
 
 			if (parts2[1].contains(",")) {
 				String[] parts3 = parts2[1].split(",");
 				for (int j = 0; j < parts3.length; j++) {
-					matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])] = parts2[0];
+					if (matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])] == null) {
+						matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])] = parts2[0];
+					} else {
+						String aux = matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])];
+						matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])] = aux + "," + parts2[0];
+					}
 				}
 			} else {
-//				System.out.println(this.states.indexOf(parts[0]) + " - " + this.states.indexOf(parts2[1]));
-//				System.out.println(parts[0] + " StateActual");
-//				System.out.println(parts2[1] + " StateSig");
-//				System.out.println(parts2[0] + " StateTransition");
-				matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts2[1])] = parts2[0];
+				if (matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts2[1])] == null) {
+					matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts2[1])] = parts2[0];
+				} else {
+					String aux = matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts2[1])];
+					matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts2[1])] = aux + "," + parts2[0];
+				}
 			}
+//			imprimirMatriz(matriz);
 		}
 
 		return matriz;
 		// obtiene el index del estado actual y al que va
+	}
+
+	private void imprimirMatriz(String[][] matriz) {
+		System.out.println("#Transition Matriz");
+		System.out.println("\t s0 \t s1 \t s2 \t s3");
+		for (int i = 0; i < matriz.length; i++) {
+			System.out.print("s" + i + "\t");
+			for (int j = 0; j < matriz.length; j++) {
+				System.out.print(matriz[i][j] + "\t");
+			}
+			System.out.println();
+		}
 	}
 
 	public void displayAutomata() {
@@ -107,7 +178,10 @@ public class Automata {
 		}
 
 		System.out.println("#Transition Matriz");
+		System.out.println("\t s0 \t s1 \t s2 \t s3");
+		// TODO FIla 1 declaracion de estados
 		for (int i = 0; i < this.transition.length; i++) {
+			System.out.print("s" + i + "\t");
 			for (int j = 0; j < this.transition.length; j++) {
 				System.out.print(transition[i][j] + "\t");
 			}
@@ -210,11 +284,17 @@ public class Automata {
 			for (int i = 0; i < auxtransition.size(); i++) {
 				transition[i] = auxtransition.get(i);
 			}
-			
-			
-			
-			Automata prueba = new Automata(alphabet, states, state0, acceptationState, transition);
+
+			///////
+			AutomataAFD2 prueba = new AutomataAFD2(alphabet, states, state0, acceptationState, transition);
 			prueba.displayAutomata();
+//			prueba.procesarCadena("babaaabaa");
+//			prueba.procesarCadena("bbbabbb");
+//			prueba.procesarCadena("bababa");
+//			prueba.procesarCadena("bazb");
+			prueba.procesarCadena("aaa");
+
+			//////
 
 		} catch (Exception e) {
 			e.printStackTrace();
