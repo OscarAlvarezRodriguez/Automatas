@@ -29,7 +29,7 @@ public class AFD {
 		try {
 			// Apertura del fichero y creacion de BufferedReader para poder
 			// hacer una lectura comoda (disponer del metodo readLine()).
-			archivo = new File("G:\\Prueba.txt");
+			archivo = new File(direccion);
 			fr = new FileReader(archivo);
 			br = new BufferedReader(fr);
 
@@ -73,15 +73,14 @@ public class AFD {
 						throw new IllegalArgumentException("Unexpected value: " + time);
 					}
 				}
-				
+
 				String[] transition = new String[auxtransition.size()];
 				for (int i = 0; i < auxtransition.size(); i++) {
 					transition[i] = auxtransition.get(i);
 				}
 				this.transition = TransitionMatriz(transition);
-				
+
 			}
-			
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,13 +132,13 @@ public class AFD {
 		this.transition = TransitionMatriz(transition);
 	}
 
-	public boolean procesarCadena(String cadena) {
+	public boolean procesarCadenaDetallada(String cadena) {
 		System.out.println("\n \n \n");
 		System.out.println("INICIANDO PROCESAMIENTO");
-		return procesarCadena(cadena, null);
+		return procesarCadenaDetallada(cadena, null);
 	}
 
-	private boolean procesarCadena(String cadena, String state) {
+	private boolean procesarCadenaDetallada(String cadena, String state) {
 		if (state == null) {
 			state = this.State0;
 		}
@@ -170,6 +169,41 @@ public class AFD {
 			} else if (this.transition[this.states.indexOf(state)][i].contains(sigma)
 					&& this.transition[this.states.indexOf(state)][i].contains(",")) {
 				state = states.get(i);
+				return procesarCadenaDetallada(cadena, state);
+			} else if (this.transition[this.states.indexOf(state)][i].contentEquals(sigma)) {
+				state = states.get(i);
+				return procesarCadenaDetallada(cadena, state);
+			}
+		}
+
+		System.out.println("El estado " + state + " No tiene transicion con " + sigma + " esta cadena no es aceptada");
+		return false;
+	}
+
+	public boolean procesarCadena(String cadena) {
+		return procesarCadena(cadena, null);
+	}
+
+	private boolean procesarCadena(String cadena, String state) {
+		if (state == null) {
+			state = this.State0;
+		}
+		if (cadena.contentEquals("")) {
+			if (acceptationStates.contains(state)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		String sigma = cadena.substring(0, 1);
+		cadena = cadena.substring(1);
+
+		for (int i = 0; i < this.transition.length; i++) {
+			if (this.transition[this.states.indexOf(state)][i] == null) {
+			} else if (this.transition[this.states.indexOf(state)][i].contains(sigma)
+					&& this.transition[this.states.indexOf(state)][i].contains(",")) {
+				state = states.get(i);
 				return procesarCadena(cadena, state);
 			} else if (this.transition[this.states.indexOf(state)][i].contentEquals(sigma)) {
 				state = states.get(i);
@@ -177,7 +211,6 @@ public class AFD {
 			}
 		}
 
-		System.out.println("El estado " + state + " No tiene transicion con " + sigma + " esta cadena no es aceptada");
 		return false;
 	}
 
@@ -230,11 +263,10 @@ public class AFD {
 
 	private void imprimirMatriz(String[][] matriz) {
 		System.out.println("#Transition Matriz");
-		System.out.println("\t s0 \t s1 \t s2 \t s3");
-		for (int i = 0; i < matriz.length; i++) {
+		for (int i = 0; i < this.transition.length; i++) {
 			System.out.print("s" + i + "\t");
-			for (int j = 0; j < matriz.length; j++) {
-				System.out.print(matriz[i][j] + "\t");
+			for (int j = 0; j < this.transition.length; j++) {
+				System.out.print(transition[i][j] + "\t");
 			}
 			System.out.println();
 		}
@@ -266,7 +298,6 @@ public class AFD {
 			System.out.print("s" + i + "\t");
 		}
 		System.out.println();
-		// TODO FIla 1 declaracion de estados
 		for (int i = 0; i < this.transition.length; i++) {
 			System.out.print("s" + i + "\t");
 			for (int j = 0; j < this.transition.length; j++) {
@@ -279,6 +310,6 @@ public class AFD {
 	public static void main(String[] arg) {
 		AFD prueba = new AFD("G:\\Prueba.txt");
 		prueba.displayAutomata();
-		prueba.procesarCadena("aaaa");
+		System.out.println(prueba.procesarCadena("aaaa"));
 	}
 }

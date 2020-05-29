@@ -15,6 +15,123 @@ public class AFND {
 
 	String[][] transition;
 
+	public AFND(String direccion) {
+		/*
+		 * Codigo base de lectura tomado de
+		 * http://chuwiki.chuidiang.org/index.php?title=
+		 * Lectura_y_Escritura_de_Ficheros_en_Java solo modificaré un poco el codigo
+		 */
+
+		File archivo = null;
+		FileReader fr = null;
+		BufferedReader br = null;
+
+		try {
+			// Apertura del fichero y creacion de BufferedReader para poder
+			// hacer una lectura comoda (disponer del metodo readLine()).
+			archivo = new File(direccion);
+			fr = new FileReader(archivo);
+			br = new BufferedReader(fr);
+
+			// Lectura del fichero
+			String linea;
+			int time = -1;
+
+			LinkedList<String> auxtransition = new LinkedList<String>();
+
+			while ((linea = br.readLine()) != null) {
+//				System.out.println(linea + "\t\t" + linea.length());
+				if (linea.contentEquals("#alphabet")) {
+					time = 0;
+				} else if (linea.contentEquals("#states")) {
+					time = 1;
+				} else if (linea.contentEquals("#initial")) {
+					time = 2;
+				} else if (linea.contentEquals("#accepting")) {
+					time = 3;
+				} else if (linea.contentEquals("#transitions")) {
+					time = 4;
+				} else {
+					switch (time) {
+					case 0:
+						this.alphabet.add(linea);
+						break;
+					case 1:
+						this.states.add(linea);
+						break;
+					case 2:
+						this.State0 = linea;
+						break;
+					case 3:
+						this.acceptationStates.add(linea);
+						break;
+					case 4:
+						auxtransition.add(linea);
+						break;
+					default:
+						System.out.println(time);
+						throw new IllegalArgumentException("Unexpected value: " + time);
+					}
+				}
+
+				String[] transition = new String[auxtransition.size()];
+				for (int i = 0; i < auxtransition.size(); i++) {
+					transition[i] = auxtransition.get(i);
+				}
+				this.transition = TransitionMatriz(transition);
+
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// En el finally cerramos el fichero, para asegurarnos
+			// que se cierra tanto si todo va bien como si salta
+			// una excepcion.
+			try {
+				if (null != fr) {
+					fr.close();
+				}
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
+
+	public AFND(String[] alphabet, String[] states, String state0, String[] acceptationState, String[] transition) {
+		// get alphabet and add the list
+		for (int i = 0; i < alphabet.length; i++) {
+			this.alphabet.add(alphabet[i]);
+		}
+
+		// get states and add the list
+		for (int i = 0; i < states.length; i++) {
+			this.states.add(states[i]);
+		}
+
+		// declaration of initial state
+		if (this.states.contains(state0)) {
+			this.State0 = state0;
+		} else {
+			System.out.println("WEY QUE HACES!! \nel estado declarado como inicial no existe");
+			System.exit(0);
+		}
+
+		this.State0 = state0;
+
+		// get and comprobate the acceptation state in states
+		for (int i = 0; i < acceptationState.length; i++) {
+			if (this.states.contains(acceptationState[i])) {
+				this.acceptationStates.add(acceptationState[i]);
+			} else {
+				System.out.println("WEY QUE HACES!! \ndeclaracion erronea de estados de aceptacion");
+				System.exit(0);
+			}
+		}
+
+		this.transition = TransitionMatriz(transition);
+	}
+
 	public boolean procesarCadena(String cadena) {
 		System.out.println("\n \n \n");
 		System.out.println("INICIANDO PROCESAMIENTO");
@@ -70,39 +187,66 @@ public class AFND {
 
 	}
 
-	public AFND(String[] alphabet, String[] states, String state0, String[] acceptationState,
-			String[] transition) {
-		// get alphabet and add the list
-		for (int i = 0; i < alphabet.length; i++) {
-			this.alphabet.add(alphabet[i]);
+	public boolean procesarCadenaDetallada(String cadena) {
+		System.out.println("\n \n \n");
+		System.out.println("INICIANDO PROCESAMIENTO");
+		return procesarCadenaDetallada(cadena, null, null);
+	}
+
+	private boolean procesarCadenaDetallada(String cadena, String state, String estadosPasados) {
+
+		estadosPasados = estadosPasados + ("[" + state + "," + cadena + "]->");
+		
+		if (state == null) {
+			state = this.State0;
+			estadosPasados = ("[" + state + "," + cadena + "]->");	
 		}
 
-		// get states and add the list
-		for (int i = 0; i < states.length; i++) {
-			this.states.add(states[i]);
-		}
-
-		// declaration of initial state
-		if (this.states.contains(state0)) {
-			this.State0 = state0;
-		} else {
-			System.out.println("WEY QUE HACES!! \nel estado declarado como inicial no existe");
-			System.exit(0);
-		}
-
-		this.State0 = state0;
-
-		// get and comprobate the acceptation state in states
-		for (int i = 0; i < acceptationState.length; i++) {
-			if (this.states.contains(acceptationState[i])) {
-				this.acceptationStates.add(acceptationState[i]);
-			} else {
-				System.out.println("WEY QUE HACES!! \ndeclaracion erronea de estados de aceptacion");
-				System.exit(0);
+		if(cadena.contentEquals("")) {
+			if(acceptationStates.contains(state)) {
+				System.out.println(estadosPasados + "Aceptacion");
+				return true;
+			}else {
+				System.out.println(estadosPasados + "No aceptacion");
+				return false;
 			}
 		}
+		
 
-		this.transition = TransitionMatriz(transition);
+		String sigma = cadena.substring(0, 1);
+		cadena = cadena.substring(1);
+
+
+		for (int i = 0; i < this.transition.length; i++) {
+//			System.out.println(stateContains(state, sigma, i));
+			if (stateContains(state, sigma, i)) {
+				procesarCadenaDetallada(cadena, states.get(i), estadosPasados);
+			}
+		}
+		
+		if(stateContains(state, sigma)) {
+			return true;			
+		}else {
+			System.out.println(estadosPasados + "Abortado");			
+			return false;
+		}
+	}
+
+	private boolean stateContains(String state, String sigma) {
+		for (int i = 0; i < transition.length; i++) {
+			if(stateContains(state, sigma, i)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean stateContains(String state, String sigma, int i) {
+		if (this.transition[this.states.indexOf(state)][i] == null)
+			return false;
+		else if (this.transition[this.states.indexOf(state)][i].contains(sigma))
+			return true;
+		return false;
 	}
 
 	private String[][] TransitionMatriz(String[] transition) {
@@ -185,8 +329,11 @@ public class AFND {
 		}
 
 		System.out.println("#Transition Matriz");
-		System.out.println("\t s0 \t s1 \t s2 \t s3");
-		// TODO FIla 1 declaracion de estados
+		System.out.print("\t");
+		for (int i = 0; i < states.size(); i++) {
+			System.out.print("s" + i + "\t");
+		}
+		System.out.println();
 		for (int i = 0; i < this.transition.length; i++) {
 			System.out.print("s" + i + "\t");
 			for (int j = 0; j < this.transition.length; j++) {
@@ -197,125 +344,9 @@ public class AFND {
 	}
 
 	public static void main(String[] arg) {
-
-		/*
-		 * Codigo base de lectura tomado de
-		 * http://chuwiki.chuidiang.org/index.php?title=
-		 * Lectura_y_Escritura_de_Ficheros_en_Java solo modificaré un poco el codigo
-		 */
-
-		File archivo = null;
-		FileReader fr = null;
-		BufferedReader br = null;
-
-		try {
-			// Apertura del fichero y creacion de BufferedReader para poder
-			// hacer una lectura comoda (disponer del metodo readLine()).
-			archivo = new File("G:\\Prueba.txt");
-			fr = new FileReader(archivo);
-			br = new BufferedReader(fr);
-
-			// Lectura del fichero
-			String linea;
-			int time = -1;
-
-			LinkedList<String> auxAlphabet = new LinkedList<String>();
-			LinkedList<String> auxStates = new LinkedList<String>();
-			String auxState0 = null;
-			LinkedList<String> auxAcceptationStates = new LinkedList<String>();
-			LinkedList<String> auxtransition = new LinkedList<String>();
-
-			while ((linea = br.readLine()) != null) {
-//				System.out.println(linea + "\t\t" + linea.length());
-				if (linea.contentEquals("#alphabet")) {
-					time = 0;
-				} else if (linea.contentEquals("#states")) {
-					time = 1;
-				} else if (linea.contentEquals("#initial")) {
-					time = 2;
-				} else if (linea.contentEquals("#accepting")) {
-					time = 3;
-				} else if (linea.contentEquals("#transitions")) {
-					time = 4;
-				} else {
-					switch (time) {
-					case 0:
-						auxAlphabet.add(linea);
-						break;
-					case 1:
-						auxStates.add(linea);
-						break;
-					case 2:
-						auxState0 = linea;
-						break;
-					case 3:
-						auxAcceptationStates.add(linea);
-						break;
-					case 4:
-						auxtransition.add(linea);
-						break;
-					default:
-						System.out.println(time);
-						throw new IllegalArgumentException("Unexpected value: " + time);
-					}
-				}
-
-			}
-
-			// pasar las listas a arrays para despues pasarlas a listas.....
-
-			String[] alphabet = null;
-			String[] states = null;
-			String state0 = null;
-			String[] acceptationState = null;
-			String[] transition = null;
-
-			alphabet = new String[auxAlphabet.size()];
-			for (int i = 0; i < auxAlphabet.size(); i++) {
-				alphabet[i] = auxAlphabet.get(i);
-			}
-
-			states = new String[auxStates.size()];
-			for (int i = 0; i < auxStates.size(); i++) {
-				states[i] = auxStates.get(i);
-			}
-
-			state0 = auxState0;
-
-			acceptationState = new String[auxAcceptationStates.size()];
-			for (int i = 0; i < auxAcceptationStates.size(); i++) {
-				acceptationState[i] = auxAcceptationStates.get(i);
-			}
-
-			transition = new String[auxtransition.size()];
-			for (int i = 0; i < auxtransition.size(); i++) {
-				transition[i] = auxtransition.get(i);
-			}
-
-			///////
-			AFND prueba = new AFND(alphabet, states, state0, acceptationState, transition);
-			prueba.displayAutomata();
-//			prueba.procesarCadena("babaaabaa");
-//			prueba.procesarCadena("bbbabbb");
-//			prueba.procesarCadena("bababa");
-//			prueba.procesarCadena("bazb");
-			prueba.procesarCadena("aaaa");
-
-			//////
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			// En el finally cerramos el fichero, para asegurarnos
-			// que se cierra tanto si todo va bien como si salta
-			// una excepcion.
-			try {
-				if (null != fr) {
-					fr.close();
-				}
-			} catch (Exception e2) {
-				e2.printStackTrace();
-			}
-		}
+		AFND prueba = new AFND("G:\\Prueba.txt");
+		prueba.displayAutomata();
+		prueba.procesarCadenaDetallada("aba");
+		System.out.println(prueba.procesarCadena("aba"));
 	}
 }
