@@ -5,8 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.LinkedList;
 
-//PROCESAMIENTO DETERMINISTA
-public class AutomataAFD2 {
+//PROCESAMIENTO NO DETERMINISTA
+public class AFND {
 
 	LinkedList<String> alphabet = new LinkedList<String>();
 	LinkedList<String> states = new LinkedList<String>();
@@ -18,20 +18,24 @@ public class AutomataAFD2 {
 	public boolean procesarCadena(String cadena) {
 		System.out.println("\n \n \n");
 		System.out.println("INICIANDO PROCESAMIENTO");
-		return procesarCadena(cadena, null);
+		return procesarCadena(cadena, null, false);
 	}
 
-	private boolean procesarCadena(String cadena, String state) {
+	private boolean procesarCadena(String cadena, String state, boolean isAccepted) {
+
 		if (state == null) {
 			state = this.State0;
+		}
+		if (isAccepted) {
+			return true;
 		}
 		if (cadena.contentEquals("")) {
 			System.out.println("Ha terminado el procesamiento --> Estado actual: Cadena '" + cadena + "'   Estado '"
 					+ state + "'");
-
 			if (acceptationStates.contains(state)) {
 				System.out.println("El estado " + state + " es un estado de aceptacion");
-				return true;
+				isAccepted = true;
+				return procesarCadena(cadena, state, isAccepted);
 			} else {
 				System.out.println("El estado " + state + " No es un estado de aceptacion");
 				return false;
@@ -50,20 +54,23 @@ public class AutomataAFD2 {
 
 		for (int i = 0; i < this.transition.length; i++) {
 			if (this.transition[this.states.indexOf(state)][i] == null) {
-			} else if (this.transition[this.states.indexOf(state)][i].contains(sigma) && this.transition[this.states.indexOf(state)][i].contains(",")) {
+			} else if (this.transition[this.states.indexOf(state)][i].contains(sigma)
+					&& this.transition[this.states.indexOf(state)][i].contains(",")) {
 				state = states.get(i);
-				return procesarCadena(cadena, state);
+				procesarCadena(cadena, state, isAccepted);
 			} else if (this.transition[this.states.indexOf(state)][i].contentEquals(sigma)) {
 				state = states.get(i);
-				return procesarCadena(cadena, state);
+				procesarCadena(cadena, state, isAccepted);
+
 			}
 		}
 
-		System.out.println("El estado " + state + " No tiene transicion con " + sigma + " esta cadena no es aceptada");
+//		System.out.println("El estado " + state + " No tiene transicion con " + sigma + " esta cadena no es aceptada");
 		return false;
+
 	}
 
-	public AutomataAFD2(String[] alphabet, String[] states, String state0, String[] acceptationState,
+	public AFND(String[] alphabet, String[] states, String state0, String[] acceptationState,
 			String[] transition) {
 		// get alphabet and add the list
 		for (int i = 0; i < alphabet.length; i++) {
@@ -286,13 +293,13 @@ public class AutomataAFD2 {
 			}
 
 			///////
-			AutomataAFD2 prueba = new AutomataAFD2(alphabet, states, state0, acceptationState, transition);
+			AFND prueba = new AFND(alphabet, states, state0, acceptationState, transition);
 			prueba.displayAutomata();
 //			prueba.procesarCadena("babaaabaa");
 //			prueba.procesarCadena("bbbabbb");
 //			prueba.procesarCadena("bababa");
 //			prueba.procesarCadena("bazb");
-			prueba.procesarCadena("aaa");
+			prueba.procesarCadena("aaaa");
 
 			//////
 
