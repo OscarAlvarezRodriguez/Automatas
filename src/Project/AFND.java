@@ -13,7 +13,9 @@ public class AFND {
 	String State0;
 	LinkedList<String> acceptationStates = new LinkedList<String>();
 
-	String[][] transition;
+	String[][] transition;	
+
+	LinkedList<Boolean> bools = new LinkedList<Boolean>();
 
 	public AFND(String direccion) {
 		/*
@@ -74,13 +76,13 @@ public class AFND {
 					}
 				}
 
-				String[] transition = new String[auxtransition.size()];
-				for (int i = 0; i < auxtransition.size(); i++) {
-					transition[i] = auxtransition.get(i);
-				}
-				this.transition = TransitionMatriz(transition);
-
 			}
+			String[] transition = new String[auxtransition.size()];
+			for (int i = 0; i < auxtransition.size(); i++) {
+				transition[i] = auxtransition.get(i);
+			}
+			this.transition = TransitionMatriz(transition);
+
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -133,56 +135,58 @@ public class AFND {
 	}
 
 	public boolean procesarCadena(String cadena) {
-		System.out.println("\n \n \n");
-		System.out.println("INICIANDO PROCESAMIENTO");
-		return procesarCadena(cadena, null, false);
+		this.bools = new LinkedList<Boolean>();
+		procesarCadena(cadena, null);
+		return procesarCadenaBool();
 	}
 
-	private boolean procesarCadena(String cadena, String state, boolean isAccepted) {
+	private boolean procesarCadena(String cadena, String state) {
 
 		if (state == null) {
 			state = this.State0;
 		}
-		if (isAccepted) {
-			return true;
-		}
+
 		if (cadena.contentEquals("")) {
-			System.out.println("Ha terminado el procesamiento --> Estado actual: Cadena '" + cadena + "'   Estado '"
-					+ state + "'");
 			if (acceptationStates.contains(state)) {
-				System.out.println("El estado " + state + " es un estado de aceptacion");
-				isAccepted = true;
-				return procesarCadena(cadena, state, isAccepted);
+				addBools(true);
+				return true;
 			} else {
-				System.out.println("El estado " + state + " No es un estado de aceptacion");
+				addBools(false);
 				return false;
 			}
 		}
 
-		System.out.println();
-		System.out.println("Estado actual: Cadena '" + cadena + "'   Estado '" + state + "'");
-
 		String sigma = cadena.substring(0, 1);
 		cadena = cadena.substring(1);
 
-		System.out.println("Division de cadena: Letra '" + sigma + "'    Cadena '" + cadena + "'");
-
-		System.out.println();
-
 		for (int i = 0; i < this.transition.length; i++) {
-			if (this.transition[this.states.indexOf(state)][i] == null) {
-			} else if (this.transition[this.states.indexOf(state)][i].contains(sigma)
-					&& this.transition[this.states.indexOf(state)][i].contains(",")) {
-				state = states.get(i);
-				procesarCadena(cadena, state, isAccepted);
-			} else if (this.transition[this.states.indexOf(state)][i].contentEquals(sigma)) {
-				state = states.get(i);
-				procesarCadena(cadena, state, isAccepted);
-
+//			System.out.println(stateContains(state, sigma, i));
+			if (stateContains(state, sigma, i)) {
+				procesarCadena(cadena, states.get(i));
 			}
 		}
 
-//		System.out.println("El estado " + state + " No tiene transicion con " + sigma + " esta cadena no es aceptada");
+		if (stateContains(state, sigma)) {
+			return true;
+		} else {
+			addBools(false);
+			return false;
+		}
+
+	}
+
+	private void addBools(boolean b) {
+		this.bools.add(b);
+	}
+
+	private boolean procesarCadenaBool() {
+
+		for (int i = 0; i < this.bools.size(); i++) {
+			if (bools.get(i) == true) {
+				return true;
+			}
+		}
+
 		return false;
 
 	}
@@ -196,26 +200,24 @@ public class AFND {
 	private boolean procesarCadenaDetallada(String cadena, String state, String estadosPasados) {
 
 		estadosPasados = estadosPasados + ("[" + state + "," + cadena + "]->");
-		
+
 		if (state == null) {
 			state = this.State0;
-			estadosPasados = ("[" + state + "," + cadena + "]->");	
+			estadosPasados = ("[" + state + "," + cadena + "]->");
 		}
 
-		if(cadena.contentEquals("")) {
-			if(acceptationStates.contains(state)) {
+		if (cadena.contentEquals("")) {
+			if (acceptationStates.contains(state)) {
 				System.out.println(estadosPasados + "Aceptacion");
 				return true;
-			}else {
+			} else {
 				System.out.println(estadosPasados + "No aceptacion");
 				return false;
 			}
 		}
-		
 
 		String sigma = cadena.substring(0, 1);
 		cadena = cadena.substring(1);
-
 
 		for (int i = 0; i < this.transition.length; i++) {
 //			System.out.println(stateContains(state, sigma, i));
@@ -223,18 +225,18 @@ public class AFND {
 				procesarCadenaDetallada(cadena, states.get(i), estadosPasados);
 			}
 		}
-		
-		if(stateContains(state, sigma)) {
-			return true;			
-		}else {
-			System.out.println(estadosPasados + "Abortado");			
+
+		if (stateContains(state, sigma)) {
+			return true;
+		} else {
+			System.out.println(estadosPasados + "Abortado");
 			return false;
 		}
 	}
 
 	private boolean stateContains(String state, String sigma) {
 		for (int i = 0; i < transition.length; i++) {
-			if(stateContains(state, sigma, i)) {
+			if (stateContains(state, sigma, i)) {
 				return true;
 			}
 		}
@@ -346,7 +348,11 @@ public class AFND {
 	public static void main(String[] arg) {
 		AFND prueba = new AFND("G:\\Prueba.txt");
 		prueba.displayAutomata();
+
 		prueba.procesarCadenaDetallada("aba");
 		System.out.println(prueba.procesarCadena("aba"));
+
+		prueba.procesarCadenaDetallada("aaaa");
+		System.out.println(prueba.procesarCadena("aaaa"));
 	}
 }
