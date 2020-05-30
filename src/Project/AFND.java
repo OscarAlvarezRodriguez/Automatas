@@ -194,7 +194,9 @@ public class AFND {
 	public boolean procesarCadenaDetallada(String cadena) {
 		System.out.println("\n \n \n");
 		System.out.println("INICIANDO PROCESAMIENTO");
-		return procesarCadenaDetallada(cadena, null, null);
+		this.bools = new LinkedList<Boolean>();
+		procesarCadenaDetallada(cadena, null, null);
+		return procesarCadenaBool();
 	}
 
 	private boolean procesarCadenaDetallada(String cadena, String state, String estadosPasados) {
@@ -208,9 +210,11 @@ public class AFND {
 
 		if (cadena.contentEquals("")) {
 			if (acceptationStates.contains(state)) {
+				addBools(true);
 				System.out.println(estadosPasados + "Aceptacion");
 				return true;
 			} else {
+				addBools(false);
 				System.out.println(estadosPasados + "No aceptacion");
 				return false;
 			}
@@ -229,6 +233,7 @@ public class AFND {
 		if (stateContains(state, sigma)) {
 			return true;
 		} else {
+			addBools(false);
 			System.out.println(estadosPasados + "Abortado");
 			return false;
 		}
@@ -349,10 +354,21 @@ public class AFND {
 		AFND prueba = new AFND("G:\\Prueba.txt");
 		prueba.displayAutomata();
 
-		prueba.procesarCadenaDetallada("aba");
-		System.out.println(prueba.procesarCadena("aba"));
-
+		prueba.procesarCadenaDetallada("ab");
+		for (int i = 0; i < prueba.bools.size(); i++) {
+			System.out.println(prueba.bools.get(i));
+		}
+		
+		System.out.println("\n\n\n");
+		
 		prueba.procesarCadenaDetallada("aaaa");
-		System.out.println(prueba.procesarCadena("aaaa"));
+		for (int i = 0; i < prueba.bools.size(); i++) {
+			System.out.println(prueba.bools.get(i));
+		}
+		
+		prueba.procesarCadenaDetallada("abbab");
+		for (int i = 0; i < prueba.bools.size(); i++) {
+			System.out.println(prueba.bools.get(i));
+		}
 	}
 }
