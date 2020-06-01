@@ -236,8 +236,8 @@ public class AFD {
 //			System.out.println(parts[0] + "   -   " + parts[1]);
 //			System.out.println(parts2[0] + "   -   " + parts2[1]);
 
-			if (parts2[1].contains(",")) {
-				String[] parts3 = parts2[1].split(",");
+			if (parts2[1].contains(";")) {
+				String[] parts3 = parts2[1].split(";");
 				for (int j = 0; j < parts3.length; j++) {
 					if (matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])] == null) {
 						matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])] = parts2[0];

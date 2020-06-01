@@ -301,8 +301,8 @@ public class AFNDL {
 				System.exit(0);
 			}
 
-			if (parts2[1].contains(",")) {
-				String[] parts3 = parts2[1].split(",");
+			if (parts2[1].contains(";")) {
+				String[] parts3 = parts2[1].split(";");
 				for (int j = 0; j < parts3.length; j++) {
 					if (matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])] == null) {
 						matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])] = parts2[0];
@@ -382,15 +382,14 @@ public class AFNDL {
 			System.out.println(prueba.bools.get(i));
 		}
 
+		prueba.procesarCadenaDetallada("aaaa");
+		for (int i = 0; i < prueba.bools.size(); i++) {
+			System.out.println(prueba.bools.get(i));
+		}
 
-//		prueba.procesarCadenaDetallada("aaaa");
-//		for (int i = 0; i < prueba.bools.size(); i++) {
-//			System.out.println(prueba.bools.get(i));
-//		}
-//
-//		prueba.procesarCadenaDetallada("abbab");
-//		for (int i = 0; i < prueba.bools.size(); i++) {
-//			System.out.println(prueba.bools.get(i));
-//		}
+		prueba.procesarCadenaDetallada("abbab");
+		for (int i = 0; i < prueba.bools.size(); i++) {
+			System.out.println(prueba.bools.get(i));
+		}
 	}
 }
