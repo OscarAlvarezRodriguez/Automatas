@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<Form version="1.9" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JPanelFormInfo">
+  <NonVisualComponents>
+    <Component class="javax.swing.ButtonGroup" name="buttonGroup1">
+    </Component>
+  </NonVisualComponents>
+  <Properties>
+    <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+      <Color blue="ff" green="dd" red="bd" type="rgb"/>
+    </Property>
+    <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[0, 312]"/>
+    </Property>
+  </Properties>
+  <AuxValues>
+    <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_generateFQN" type="java.lang.Boolean" value="true"/>
+    <AuxValue name="FormSettings_generateMnemonicsCode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_i18nAutoMode" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_layoutCodeTarget" type="java.lang.Integer" value="1"/>
+    <AuxValue name="FormSettings_listenerGenerationStyle" type="java.lang.Integer" value="0"/>
+    <AuxValue name="FormSettings_variablesLocal" type="java.lang.Boolean" value="false"/>
+    <AuxValue name="FormSettings_variablesModifier" type="java.lang.Integer" value="2"/>
+  </AuxValues>
+
+  <Layout>
+    <DimensionLayout dim="0">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="36" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="INFO1" min="-2" max="-2" attributes="0"/>
+                  <Component id="AFNDL" min="-2" max="-2" attributes="0"/>
+                  <Component id="AFND" min="-2" max="-2" attributes="0"/>
+                  <Component id="AFD" min="-2" max="-2" attributes="0"/>
+                  <Component id="bienvenidos" min="-2" max="-2" attributes="0"/>
+              </Group>
+              <EmptySpace pref="282" max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="1" attributes="0">
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="Aceptar" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="103" max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+    <DimensionLayout dim="1">
+      <Group type="103" groupAlignment="0" attributes="0">
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="27" max="-2" attributes="0"/>
+              <Component id="INFO1" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="bienvenidos" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="AFD" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="AFND" min="-2" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="AFNDL" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="110" max="32767" attributes="0"/>
+              <Component id="Aceptar" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="68" max="-2" attributes="0"/>
+          </Group>
+      </Group>
+    </DimensionLayout>
+  </Layout>
+  <SubComponents>
+    <Component class="javax.swing.JRadioButton" name="bienvenidos">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Volver a la pantalla Inicial"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="AFD">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Utilizar Automata Finito Determinista"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="AFND">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Utilizar Automata Finito No Determinista"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JRadioButton" name="AFNDL">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Utilizar Automata Finito Determinista"/>
+      </Properties>
+    </Component>
+    <Component class="java.awt.Label" name="INFO1">
+      <Properties>
+        <Property name="name" type="java.lang.String" value="INFO" noResource="true"/>
+        <Property name="text" type="java.lang.String" value="Este programa esta creado para observar, analizar"/>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JButton" name="Aceptar">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Aceptar"/>
+        <Property name="actionCommand" type="java.lang.String" value="Aceptar"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="AceptarActionPerformed"/>
+      </Events>
+    </Component>
+  </SubComponents>
+</Form>
