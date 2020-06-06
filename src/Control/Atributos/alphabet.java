@@ -26,6 +26,12 @@ public class alphabet {
 			this.simbolos.add(String.valueOf(ch));
 		}
 	}
+	
+	public void addAlfabeto(String[] string) {
+		for (int i = 0; i < string.length; i++) {
+			addAlfabeto(string[i]);
+		}
+	}
 
 	public LinkedList<String> getAlfabeto() {
 		return simbolos;

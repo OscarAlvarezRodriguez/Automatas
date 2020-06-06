@@ -5,14 +5,13 @@ import java.io.File;
 import java.io.FileReader;
 import java.util.LinkedList;
 
+import Control.Atributos.State;
 import Control.Atributos.alphabet;
 
 public abstract class Automata {
 
 	alphabet alphabet = new alphabet("");
-	LinkedList<String> states = new LinkedList<String>();
-	String State0;
-	LinkedList<String> acceptationStates = new LinkedList<String>();
+	State states = new State();
 
 	String[][] transition;
 
@@ -60,13 +59,13 @@ public abstract class Automata {
 						this.alphabet.addAlfabeto(linea);
 						break;
 					case 1:
-						this.states.add(linea);
+						this.states.addState(linea);
 						break;
 					case 2:
-						this.State0 = linea;
+						this.states.setStateInitial(linea);
 						break;
 					case 3:
-						this.acceptationStates.add(linea);
+						this.states.addStatesAceptation(linea);
 						break;
 					case 4:
 						auxtransition.add(linea);
@@ -102,41 +101,23 @@ public abstract class Automata {
 
 	public Automata(String[] alphabet, String[] states, String state0, String[] acceptationState, String[] transition) {
 		// get alphabet and add the list
-		for (int i = 0; i < alphabet.length; i++) {
-			this.alphabet.addAlfabeto(alphabet[i]);
-		}
+		this.alphabet.addAlfabeto(alphabet);
 
 		// get states and add the list
-		for (int i = 0; i < states.length; i++) {
-			this.states.add(states[i]);
-		}
+		this.states.addState(states);
 
 		// declaration of initial state
-		if (this.states.contains(state0)) {
-			this.State0 = state0;
-		} else {
-			System.out.println("WEY QUE HACES!! \nel estado declarado como inicial no existe");
-			System.exit(0);
-		}
-
-		this.State0 = state0;
+		this.states.setStateInitial(state0);
 
 		// get and comprobate the acceptation state in states
-		for (int i = 0; i < acceptationState.length; i++) {
-			if (this.states.contains(acceptationState[i])) {
-				this.acceptationStates.add(acceptationState[i]);
-			} else {
-				System.out.println("WEY QUE HACES!! \ndeclaracion erronea de estados de aceptacion");
-				System.exit(0);
-			}
-		}
+		this.states.addStatesAceptation(acceptationState);
 
 		this.transition = TransitionMatriz(transition);
 	}
 
 	private String[][] TransitionMatriz(String[] transition) {
 		// Declaration square matriz for transitions
-		String[][] matriz = new String[this.states.size()][this.states.size()];
+		String[][] matriz = new String[this.states.getStates().size()][this.states.getStates().size()];
 
 		/*
 		 * The matriz with states s1,s0,s3 in order list would be
@@ -167,19 +148,19 @@ public abstract class Automata {
 			if (parts2[1].contains(";")) {
 				String[] parts3 = parts2[1].split(";");
 				for (int j = 0; j < parts3.length; j++) {
-					if (matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])] == null) {
-						matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])] = parts2[0];
+					if (matriz[this.states.getStates().indexOf(parts[0])][this.states.getStates().indexOf(parts3[j])] == null) {
+						matriz[this.states.getStates().indexOf(parts[0])][this.states.getStates().indexOf(parts3[j])] = parts2[0];
 					} else {
-						String aux = matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])];
-						matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts3[j])] = aux + "," + parts2[0];
+						String aux = matriz[this.states.getStates().indexOf(parts[0])][this.states.getStates().indexOf(parts3[j])];
+						matriz[this.states.getStates().indexOf(parts[0])][this.states.getStates().indexOf(parts3[j])] = aux + "," + parts2[0];
 					}
 				}
 			} else {
-				if (matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts2[1])] == null) {
-					matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts2[1])] = parts2[0];
+				if (matriz[this.states.getStates().indexOf(parts[0])][this.states.getStates().indexOf(parts2[1])] == null) {
+					matriz[this.states.getStates().indexOf(parts[0])][this.states.getStates().indexOf(parts2[1])] = parts2[0];
 				} else {
-					String aux = matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts2[1])];
-					matriz[this.states.indexOf(parts[0])][this.states.indexOf(parts2[1])] = aux + "," + parts2[0];
+					String aux = matriz[this.states.getStates().indexOf(parts[0])][this.states.getStates().indexOf(parts2[1])];
+					matriz[this.states.getStates().indexOf(parts[0])][this.states.getStates().indexOf(parts2[1])] = aux + "," + parts2[0];
 				}
 			}
 //			imprimirMatriz(matriz);
@@ -195,21 +176,17 @@ public abstract class Automata {
 		this.alphabet.displaySimbolos();
 		
 		System.out.println("#States");
-		for (int i = 0; i < this.states.size(); i++) {
-			System.out.println(this.states.get(i));
-		}
+		this.states.displayEstados();
 
 		System.out.println("#Initial State");
-		System.out.println(this.State0);
-
+		this.states.displayEstadoInicial();
+		
 		System.out.println("#Acceptation States");
-		for (int i = 0; i < this.acceptationStates.size(); i++) {
-			System.out.println(this.acceptationStates.get(i));
-		}
+		this.states.displayEstadosAceptacion();
 
 		System.out.println("#Transition Matriz");
 		System.out.print("\t");
-		for (int i = 0; i < states.size(); i++) {
+		for (int i = 0; i < states.getStates().size(); i++) {
 			System.out.print("s" + i + "\t");
 		}
 		System.out.println();
@@ -248,9 +225,9 @@ public abstract class Automata {
 	}
 
 	protected boolean stateContains(String state, String sigma, int i) {
-		if (this.transition[this.states.indexOf(state)][i] == null)
+		if (this.transition[this.states.getStates().indexOf(state)][i] == null)
 			return false;
-		else if (this.transition[this.states.indexOf(state)][i].contains(sigma))
+		else if (this.transition[this.states.getStates().indexOf(state)][i].contains(sigma))
 			return true;
 		return false;
 	}

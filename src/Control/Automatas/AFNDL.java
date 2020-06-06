@@ -23,11 +23,11 @@ public class AFNDL extends Automata{
 	private boolean procesarCadena(String cadena, String state) {
 
 		if (state == null) {
-			state = this.State0;
+			state = this.states.getStateInitial();
 		}
 
 		if (cadena.contentEquals("")) {
-			if (acceptationStates.contains(state)) {
+			if (this.states.confirmarEstadoAceptacion(state)) {
 				addBools(true);
 				return true;
 			} else {
@@ -42,7 +42,7 @@ public class AFNDL extends Automata{
 		for (int i = 0; i < this.transition.length; i++) {
 //			System.out.println(stateContains(state, sigma, i));
 			if (stateContains(state, sigma, i)) {
-				procesarCadena(cadena, states.get(i));
+				procesarCadena(cadena, states.getStates().get(i));
 			}
 		}
 
@@ -70,12 +70,12 @@ public class AFNDL extends Automata{
 		estadosPasados = estadosPasados + ("[" + state + "," + cadena + "]->");
 
 		if (state == null) {
-			state = this.State0;
+			state = this.states.getStateInitial();
 			estadosPasados = ("[" + state + "," + cadena + "]->");
 		}
 
 		if (cadena.contentEquals("")) {
-			if (acceptationStates.contains(state)) {
+			if (this.states.confirmarEstadoAceptacion(state)) {
 				addBools(true);
 				System.out.println(estadosPasados + "Aceptacion");
 				return true;
@@ -93,7 +93,7 @@ public class AFNDL extends Automata{
 //			System.out.println(stateContains(state, sigma, i));
 			if (stateContains(state, "$", i)) {
 				if (estadoAux == null)
-					procesarCadenaDetallada((sigma + cadena), states.get(i), estadosPasados);
+					procesarCadenaDetallada((sigma + cadena), states.getStates().get(i), estadosPasados);
 				else {
 					String aux = ("[" + state + "," + (sigma + cadena) + "]->");
 					if ((estadoAux.contains((aux)))) {
@@ -101,13 +101,13 @@ public class AFNDL extends Automata{
 						System.out.println(estadosPasados + "Ciclo");
 						return false;
 					} else {
-						procesarCadenaDetallada((sigma + cadena), states.get(i), estadosPasados);
+						procesarCadenaDetallada((sigma + cadena), states.getStates().get(i), estadosPasados);
 					}
 				}
 			}
 
 			if (stateContains(state, sigma, i)) {
-				procesarCadenaDetallada(cadena, states.get(i), estadosPasados);
+				procesarCadenaDetallada(cadena, states.getStates().get(i), estadosPasados);
 			}
 		}
 

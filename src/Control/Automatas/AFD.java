@@ -18,10 +18,10 @@ public class AFD extends Automata{
 
 	private boolean procesarCadena(String cadena, String state) {
 		if (state == null) {
-			state = this.State0;
+			state = this.states.getStateInitial();
 		}
 		if (cadena.contentEquals("")) {
-			if (acceptationStates.contains(state)) {
+			if (this.states.confirmarEstadoAceptacion(state)) {
 				return true;
 			} else {
 				return false;
@@ -32,13 +32,13 @@ public class AFD extends Automata{
 		cadena = cadena.substring(1);
 
 		for (int i = 0; i < this.transition.length; i++) {
-			if (this.transition[this.states.indexOf(state)][i] == null) {
-			} else if (this.transition[this.states.indexOf(state)][i].contains(sigma)
-					&& this.transition[this.states.indexOf(state)][i].contains(",")) {
-				state = states.get(i);
+			if (this.transition[this.states.getStates().indexOf(state)][i] == null) {
+			} else if (this.transition[this.states.getStates().indexOf(state)][i].contains(sigma)
+					&& this.transition[this.states.getStates().indexOf(state)][i].contains(",")) {
+				state = states.getStates().get(i);
 				return procesarCadena(cadena, state);
-			} else if (this.transition[this.states.indexOf(state)][i].contentEquals(sigma)) {
-				state = states.get(i);
+			} else if (this.transition[this.states.getStates().indexOf(state)][i].contentEquals(sigma)) {
+				state = states.getStates().get(i);
 				return procesarCadena(cadena, state);
 			}
 		}
@@ -55,13 +55,13 @@ public class AFD extends Automata{
 
 	private boolean procesarCadenaDetallada(String cadena, String state) {
 		if (state == null) {
-			state = this.State0;
+			state = this.states.getStateInitial();
 		}
 		if (cadena.contentEquals("")) {
 			System.out.println("Ha terminado el procesamiento --> Estado actual: Cadena '" + cadena + "'   Estado '"
 					+ state + "'");
 
-			if (acceptationStates.contains(state)) {
+			if (this.states.confirmarEstadoAceptacion(state)) {
 				System.out.println("El estado " + state + " es un estado de aceptacion");
 				return true;
 			} else {
@@ -80,13 +80,13 @@ public class AFD extends Automata{
 		System.out.println();
 
 		for (int i = 0; i < this.transition.length; i++) {
-			if (this.transition[this.states.indexOf(state)][i] == null) {
-			} else if (this.transition[this.states.indexOf(state)][i].contains(sigma)
-					&& this.transition[this.states.indexOf(state)][i].contains(",")) {
-				state = states.get(i);
+			if (this.transition[this.states.getStates().indexOf(state)][i] == null) {
+			} else if (this.transition[this.states.getStates().indexOf(state)][i].contains(sigma)
+					&& this.transition[this.states.getStates().indexOf(state)][i].contains(",")) {
+				state = states.getStates().get(i);
 				return procesarCadenaDetallada(cadena, state);
-			} else if (this.transition[this.states.indexOf(state)][i].contentEquals(sigma)) {
-				state = states.get(i);
+			} else if (this.transition[this.states.getStates().indexOf(state)][i].contentEquals(sigma)) {
+				state = states.getStates().get(i);
 				return procesarCadenaDetallada(cadena, state);
 			}
 		}
