@@ -1,13 +1,15 @@
-package Project;
+package Control.Automatas;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.LinkedList;
 
+import Control.Atributos.alphabet;
+
 public abstract class Automata {
 
-	LinkedList<String> alphabet = new LinkedList<String>();
+	alphabet alphabet = new alphabet("");
 	LinkedList<String> states = new LinkedList<String>();
 	String State0;
 	LinkedList<String> acceptationStates = new LinkedList<String>();
@@ -55,7 +57,7 @@ public abstract class Automata {
 				} else {
 					switch (time) {
 					case 0:
-						this.alphabet.add(linea);
+						this.alphabet.addAlfabeto(linea);
 						break;
 					case 1:
 						this.states.add(linea);
@@ -101,7 +103,7 @@ public abstract class Automata {
 	public Automata(String[] alphabet, String[] states, String state0, String[] acceptationState, String[] transition) {
 		// get alphabet and add the list
 		for (int i = 0; i < alphabet.length; i++) {
-			this.alphabet.add(alphabet[i]);
+			this.alphabet.addAlfabeto(alphabet[i]);
 		}
 
 		// get states and add the list
@@ -190,10 +192,8 @@ public abstract class Automata {
 	public void displayAutomata() {
 
 		System.out.println("#Alphabet");
-		for (int i = 0; i < this.alphabet.size(); i++) {
-			System.out.println(this.alphabet.get(i));
-		}
-
+		this.alphabet.displaySimbolos();
+		
 		System.out.println("#States");
 		for (int i = 0; i < this.states.size(); i++) {
 			System.out.println(this.states.get(i));

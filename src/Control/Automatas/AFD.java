@@ -1,9 +1,4 @@
-package Project;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.util.LinkedList;
+package Control.Automatas;
 
 //PROCESAMIENTO DETERMINISTA
 public class AFD extends Automata{

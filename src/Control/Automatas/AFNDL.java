@@ -1,18 +1,15 @@
-package Project;
+package Control.Automatas;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.util.LinkedList;
 
 //PROCESAMIENTO NO DETERMINISTA
-public class AFND extends Automata{
+public class AFNDL extends Automata{
 
-	public AFND(String direccion) {
+	public AFNDL(String direccion) {
 		super(direccion);
 	}
 	
-	public AFND(String[] alphabet, String[] states, String state0, String[] acceptationState, String[] transition) {
+	public AFNDL(String[] alphabet, String[] states, String state0, String[] acceptationState, String[] transition) {
 		super(alphabet, states, state0, acceptationState, transition);
 	}
 	
@@ -57,7 +54,7 @@ public class AFND extends Automata{
 		}
 
 	}
-
+	
 	@Override
 	public boolean procesarCadenaDetallada(String cadena) {
 		System.out.println("\n \n \n");
@@ -69,6 +66,7 @@ public class AFND extends Automata{
 
 	private boolean procesarCadenaDetallada(String cadena, String state, String estadosPasados) {
 
+		String estadoAux = estadosPasados;
 		estadosPasados = estadosPasados + ("[" + state + "," + cadena + "]->");
 
 		if (state == null) {
@@ -93,6 +91,21 @@ public class AFND extends Automata{
 
 		for (int i = 0; i < this.transition.length; i++) {
 //			System.out.println(stateContains(state, sigma, i));
+			if (stateContains(state, "$", i)) {
+				if (estadoAux == null)
+					procesarCadenaDetallada((sigma + cadena), states.get(i), estadosPasados);
+				else {
+					String aux = ("[" + state + "," + (sigma + cadena) + "]->");
+					if ((estadoAux.contains((aux)))) {
+						addBools(false);
+						System.out.println(estadosPasados + "Ciclo");
+						return false;
+					} else {
+						procesarCadenaDetallada((sigma + cadena), states.get(i), estadosPasados);
+					}
+				}
+			}
+
 			if (stateContains(state, sigma, i)) {
 				procesarCadenaDetallada(cadena, states.get(i), estadosPasados);
 			}
@@ -109,19 +122,19 @@ public class AFND extends Automata{
 
 
 	public static void main(String[] arg) {
-		AFND prueba = new AFND("G:\\Prueba.txt");
+		AFNDL prueba = new AFNDL("G:\\Prueba.txt");
 		prueba.displayAutomata();
 
 		prueba.procesarCadenaDetallada("ab");
 		for (int i = 0; i < prueba.bools.size(); i++) {
 			System.out.println(prueba.bools.get(i));
 		}
-				
+
 		prueba.procesarCadenaDetallada("aaaa");
 		for (int i = 0; i < prueba.bools.size(); i++) {
 			System.out.println(prueba.bools.get(i));
 		}
-		
+
 		prueba.procesarCadenaDetallada("abbab");
 		for (int i = 0; i < prueba.bools.size(); i++) {
 			System.out.println(prueba.bools.get(i));

@@ -1,4 +1,6 @@
-package Project;
+package Control.Atributos;
+
+import Control.Automatas.Automata;
 
 public class PruebasLelas extends Automata{
 
