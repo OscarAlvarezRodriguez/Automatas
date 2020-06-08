@@ -1,4 +1,4 @@
-package Control.Atributos;
+package Control.Pruebas;
 
 import Control.Automatas.Automata;
 

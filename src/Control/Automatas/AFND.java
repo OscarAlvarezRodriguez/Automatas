@@ -39,14 +39,14 @@ public class AFND extends Automata{
 		String sigma = cadena.substring(0, 1);
 		cadena = cadena.substring(1);
 
-		for (int i = 0; i < this.transition.length; i++) {
+		for (int i = 0; i < this.transition.getMatriz().length; i++) {
 //			System.out.println(stateContains(state, sigma, i));
-			if (stateContains(state, sigma, i)) {
+			if (this.transition.stateContains(state, sigma, i)) {
 				procesarCadena(cadena, states.getStates().get(i));
 			}
 		}
 
-		if (stateContains(state, sigma)) {
+		if (this.transition.stateContains(state, sigma)) {
 			return true;
 		} else {
 			addBools(false);
@@ -88,14 +88,14 @@ public class AFND extends Automata{
 		String sigma = cadena.substring(0, 1);
 		cadena = cadena.substring(1);
 
-		for (int i = 0; i < this.transition.length; i++) {
+		for (int i = 0; i < this.transition.getMatriz().length; i++) {
 //			System.out.println(stateContains(state, sigma, i));
-			if (stateContains(state, sigma, i)) {
+			if (this.transition.stateContains(state, sigma, i)) {
 				procesarCadenaDetallada(cadena, states.getStates().get(i), estadosPasados);
 			}
 		}
 
-		if (stateContains(state, sigma)) {
+		if (this.transition.stateContains(state, sigma)) {
 			return true;
 		} else {
 			addBools(false);

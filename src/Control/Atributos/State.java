@@ -28,13 +28,17 @@ public class State {
 	}
 
 	public void addState(String[] states) {
-		for (int i = 0; i < states.length; i++) {
-			addState(states[i]);
+		if(!(states == null)) {
+			for (int i = 0; i < states.length; i++) {
+				addState(states[i]);
+			}			
 		}
 	}
 
 	public void addState(String state) {
-			this.states.add(state);
+		if(!(state == null)) {
+			this.states.add(state);			
+		}
 	}
 
 	public boolean confirmarEstadoExistente(String state) {

@@ -31,13 +31,13 @@ public class AFD extends Automata{
 		String sigma = cadena.substring(0, 1);
 		cadena = cadena.substring(1);
 
-		for (int i = 0; i < this.transition.length; i++) {
-			if (this.transition[this.states.getStates().indexOf(state)][i] == null) {
-			} else if (this.transition[this.states.getStates().indexOf(state)][i].contains(sigma)
-					&& this.transition[this.states.getStates().indexOf(state)][i].contains(",")) {
+		for (int i = 0; i < this.transition.getMatriz().length; i++) {
+			if (this.transition.getMatriz()[this.states.getStates().indexOf(state)][i] == null) {
+			} else if (this.transition.getMatriz()[this.states.getStates().indexOf(state)][i].contains(sigma)
+					&& this.transition.getMatriz()[this.states.getStates().indexOf(state)][i].contains(",")) {
 				state = states.getStates().get(i);
 				return procesarCadena(cadena, state);
-			} else if (this.transition[this.states.getStates().indexOf(state)][i].contentEquals(sigma)) {
+			} else if (this.transition.getMatriz()[this.states.getStates().indexOf(state)][i].contentEquals(sigma)) {
 				state = states.getStates().get(i);
 				return procesarCadena(cadena, state);
 			}
@@ -79,13 +79,13 @@ public class AFD extends Automata{
 
 		System.out.println();
 
-		for (int i = 0; i < this.transition.length; i++) {
-			if (this.transition[this.states.getStates().indexOf(state)][i] == null) {
-			} else if (this.transition[this.states.getStates().indexOf(state)][i].contains(sigma)
-					&& this.transition[this.states.getStates().indexOf(state)][i].contains(",")) {
+		for (int i = 0; i < this.transition.getMatriz().length; i++) {
+			if (this.transition.getMatriz()[this.states.getStates().indexOf(state)][i] == null) {
+			} else if (this.transition.getMatriz()[this.states.getStates().indexOf(state)][i].contains(sigma)
+					&& this.transition.getMatriz()[this.states.getStates().indexOf(state)][i].contains(",")) {
 				state = states.getStates().get(i);
 				return procesarCadenaDetallada(cadena, state);
-			} else if (this.transition[this.states.getStates().indexOf(state)][i].contentEquals(sigma)) {
+			} else if (this.transition.getMatriz()[this.states.getStates().indexOf(state)][i].contentEquals(sigma)) {
 				state = states.getStates().get(i);
 				return procesarCadenaDetallada(cadena, state);
 			}
@@ -98,6 +98,6 @@ public class AFD extends Automata{
 	public static void main(String[] arg) {
 		AFD prueba = new AFD("G:\\Prueba.txt");
 		prueba.displayAutomata();
-		System.out.println(prueba.procesarCadena("aaaa"));
+		System.out.println(prueba.procesarCadenaDetallada("aaaa"));
 	}
 }
